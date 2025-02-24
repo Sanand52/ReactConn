@@ -21,27 +21,6 @@ let savedata = (e) => {
   e.preventDefault();
 
   {formdata._id ? updateData() : insertData()}
-
-  // axios.post("http://localhost:3000/api/student/insert", formdata)
-  //   .then((res) => {
-  //     // console.log("Upload successful:", res.data); for testing
-  //     toast.success(res.data.message);
-
-  //     // Reset form data ONLY if the upload is successful
-  //     setFormdata({
-  //       name: '',
-  //       age: '',
-  //       email: '',
-  //       message: ''
-  //     });
-
-  //     // Refresh the student list
-  //     getStdList();
-  //   })
-  //   .catch((err) => {
-  //     // console.log("Upload failed:", err); for testing error
-  //     toast.error(err.response.data.message);
-  //   });
 };
 
 let insertData = () => {
@@ -68,10 +47,53 @@ let insertData = () => {
 };
 
 let updateData = () => {
-  axios.put(`http://localhost:3000/api/student/update/${formdata._id}`,formdata)
+
+  Swal.fire({
+    title: "Do you want to save the changes?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Save",
+    denyButtonText: `Don't save`
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    axios.put(`http://localhost:3000/api/student/update/${formdata._id}`,formdata)
     .then((res) => {
       // console.log("Data updated successfully:", res.data);// for testing
-      toast.success(res.data.message);
+      // toast.success(res.data.message);
+
+      // Reset form data ONLY if the upload is successful
+      setFormdata({
+        name: '',
+        age: '',
+        email: '',
+        message: ''
+      });
+
+      // Refresh the student list
+      getStdList();
+    })
+    .catch((err) => {
+      // console.log("data update failed", err); // for testing error
+      // toast.error(err.response.data.message);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: err.response.data.message,
+      });
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire("Saved!", "", "success");
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+    }
+  });
+
+
+  /* axios.put(`http://localhost:3000/api/student/update/${formdata._id}`,formdata)
+    .then((res) => {
+      // console.log("Data updated successfully:", res.data);// for testing
+      // toast.success(res.data.message);
 
       // Reset form data ONLY if the upload is successful
       setFormdata({
@@ -87,7 +109,7 @@ let updateData = () => {
     .catch((err) => {
       console.log("data update failed", err); // for testing error
       toast.error(err.response.data.message);
-    });
+    });*/
 }
 
 

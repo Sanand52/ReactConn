@@ -71,6 +71,7 @@ let updatestd = async (req, res) => {
         age,
         email,
         message};
+
     await stdModel.updateOne({_id:id},std)
     .then((success) => {
         res.status(200).send({
